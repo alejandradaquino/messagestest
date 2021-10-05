@@ -13,8 +13,16 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    implementation 'com.rabbitmq:amqp-client:5.9.0'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.71'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    testImplementation 'org.mockito:mockito-junit-jupiter:3.12.4'
+    testImplementation 'org.assertj:assertj-core:3.21.0'
+    testImplementation("org.mockito:mockito-inline:2.8.47")
+
 }
 
 test {
