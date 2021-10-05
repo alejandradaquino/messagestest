@@ -2,7 +2,16 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.5.31'
     id 'java'
 }
-
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'message.sender.MainKt'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
 group 'org.example'
 version '1.0-SNAPSHOT'
 

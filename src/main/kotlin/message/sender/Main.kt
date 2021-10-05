@@ -1,8 +1,9 @@
+package message.sender
 
 import com.rabbitmq.client.*
 import java.nio.charset.StandardCharsets
 
-const val QUEUE_NAME: String ="test_queue"
+const val QUEUE_NAME: String ="new_queue"
 
 fun main(args: Array<String>) {
     val factory = ConnectionFactory()
@@ -28,7 +29,7 @@ fun main(args: Array<String>) {
     val channel = connection.createChannel()
     val consumerTag = "SimpleConsumer"
 
-    channel.queueDeclare("test_queue", false, false, false, null)
+    channel.queueDeclare(QUEUE_NAME, false, false, false, null)
 
     println("[$consumerTag] Waiting for messages...")
     val deliverCallback = DeliverCallback { consumerTag: String?, delivery: Delivery ->
