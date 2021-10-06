@@ -2,6 +2,10 @@
 
 Project to test integration with rabbitmq
 
+Start rabbitmq with 
+
+``docker-compose up``
+
 build The app with
 
 ``/gradlew build``
