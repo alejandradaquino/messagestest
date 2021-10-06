@@ -2,6 +2,12 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.5.31'
     id 'java'
 }
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+
 jar {
     manifest {
         attributes(
@@ -11,6 +17,7 @@ jar {
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 }
 group 'org.example'
 version '1.0-SNAPSHOT'
@@ -19,13 +26,13 @@ repositories {
     mavenCentral()
     mavenCentral()
 }
-
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation 'com.rabbitmq:amqp-client:5.9.0'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.71'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.1.0"
     implementation 'com.google.inject:guice:5.0.1'
 
 
