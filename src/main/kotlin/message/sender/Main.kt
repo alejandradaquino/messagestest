@@ -1,45 +1,23 @@
 package message.sender
 
+import com.google.inject.Guice
+import com.google.inject.Injector
 import com.rabbitmq.client.*
+import message.sender.guice.MessageSenderModule
+import message.sender.reader.PeopleReader
+import message.sender.writer.PersonMessageSender
 import java.nio.charset.StandardCharsets
 
-const val QUEUE_NAME: String ="new_queue"
+const val QUEUE_NAME: String = "new_queue"
 
 fun main(args: Array<String>) {
-    val factory = ConnectionFactory()
-    factory.newConnection("amqp://guest:guest@localhost:5672/").use { connection ->
-        val createChannel: Channel = connection.createChannel()
-        createChannel.use { channel ->
-            channel.queueDeclare(QUEUE_NAME, false, false, false, null)
-            for (i in 1 .. 100){
 
-                val message = "Hello World!"
-                channel.basicPublish(
-                    "",
-                    QUEUE_NAME,
-                    null,
-                    (message + i).toByteArray(StandardCharsets.UTF_8)
-                )
-                println(" [x] Sent '$message' $i")
-            }
+    val path = args[0]
 
-        }
-    }
-    val connection = factory.newConnection("amqp://guest:guest@localhost:5672/")
-    val channel = connection.createChannel()
-    val consumerTag = "SimpleConsumer"
+    val injector = Guice.createInjector(MessageSenderModule())
 
-    channel.queueDeclare(QUEUE_NAME, false, false, false, null)
+    val personMessageSender = injector.getInstance(PersonMessageSender::class.java)
+    val peopleReader = injector.getInstance(PeopleReader::class.java)
 
-    println("[$consumerTag] Waiting for messages...")
-    val deliverCallback = DeliverCallback { consumerTag: String?, delivery: Delivery ->
-        val message = String(delivery.body, StandardCharsets.UTF_8)
-        println("[$consumerTag] Received message: '$message'")
-    }
-    val cancelCallback = CancelCallback { consumerTag: String? ->
-        println("[$consumerTag] was canceled")
-    }
-
-    channel.basicConsume(QUEUE_NAME, true, consumerTag, deliverCallback, cancelCallback)
-
+    peopleReader.read(path).forEach { personMessageSender.send(it) }
 }
